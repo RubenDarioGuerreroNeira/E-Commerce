@@ -35,8 +35,8 @@ export class UsersController {
 
     @Get(':id')
     @ApiBearerAuth()
-    // @Roles(Role.Admin)
-    // @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Admin)
+    @UseGuards(AuthGuard, RolesGuard)
     getUserById(@Param("id", ParseUUIDPipe) id: string) {
         return this.usersService.getByID(id);
 

@@ -20,7 +20,7 @@ async function bootstrap() {
 
   app.use(LoggerMiddleware)
   app.useGlobalPipes(new ValidationPipe())
-  await app.listen(3900);
+  await app.listen(9050);
 
 }
 
