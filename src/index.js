@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { DocumentBuilder, SwaggerModule } = require('@nestjs/swagger');
+const { join } = require('path');
 
 const app = express();
 const port = 4999;
@@ -29,7 +30,10 @@ const swaggerOptions = new DocumentBuilder()
 const swaggerDocs = swaggerJsdoc({
   swaggerDefinition: swaggerOptions,
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:2401945418.
-  apis: ['./index.js','./app.module.ts'], // Aquí puedes cambiarlo a donde tengas los comentarios JSDoc
+apis: [
+  './index.js','/app.module.ts',  // Apunta al archivo JavaScript principal
+  join(__dirname, './app.module.ts') // Apunta a tus archivos TypeScript
+],
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
