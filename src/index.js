@@ -1,78 +1,46 @@
+// ---------- beta 1 .0------------------------
 const express = require('express');
-const { Pool } = require('pg');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const { NestFactory } = require('@nestjs/core');
+const { AppModule } = require('../dist/src/app.module'); // Asegúrate de que la ruta sea correcta
+const { ValidationPipe } = require('@nestjs/common');
 const { DocumentBuilder, SwaggerModule } = require('@nestjs/swagger');
-const { join } = require('path');
 
-const app = express();
-const port = 4999;
+async function bootstrap() {
+    const app = express();
+    const port = 550;
 
-const pool = new Pool({
-  user: 'root',
-  host: '35.227.164.209',
-  database: 'proyecto_5qko',
-  password: 'GzInv8S6vPS4VhSAwBIyBmzstt72oVWV',
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+    // Inicia una instancia de NestJS
+    const nestApp = await NestFactory.create(AppModule, { bodyParser: false });
+    await nestApp.init();
 
-// Configuración de Swagger
-const swaggerOptions = new DocumentBuilder()
-  .setTitle('E-Commerce M04 HENRY')
-  .setDescription('P.I MODULE 04 HENRY')
-  .setVersion('1.0')
-  .addBearerAuth()
-  .build();
+    // Configuración de Swagger
+    const options = new DocumentBuilder()
+        .setTitle('E-Commerce M04 HENRY')
+        .setDescription('P.I MODULE 04 HENRY')
+        .setVersion('1.0')
+        .addBearerAuth()
+        .build();
+    
+    const document = SwaggerModule.createDocument(nestApp, options);
+    SwaggerModule.setup('api', nestApp, document);
 
-const swaggerDocs = swaggerJsdoc({
-  swaggerDefinition: swaggerOptions,
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:2401945418.
-apis: [
-  './index.js','/app.module.ts',  // Apunta al archivo JavaScript principal
-  join(__dirname, './app.module.ts') // Apunta a tus archivos TypeScript
-],
-});
+    // Configura el manejo de validación global
+    nestApp.useGlobalPipes(new ValidationPipe());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    // Monta la instancia de NestJS como middleware en Express
+    app.use(nestApp.getHttpAdapter().getInstance());
 
-/**
- * @swagger
- * /data:
- *   get:
- *     summary: Obtiene datos de la tabla
- *     responses:
- *       200:
- *         description: Éxito al obtener datos
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *       500:
- *         description: Error al obtener datos
- */
-app.get('/data', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM tu_tabla'); // Reemplaza 'tu_tabla' con el nombre de tu tabla
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener datos');
-  }
-});
+    app.listen(port, () => {
+        console.log(`API escuchando en http://localhost:${port}`);
+        console.log(`Swagger UI disponible en http://localhost:${port}/api`);
+    });
+}
 
-app.listen(port, () => {
-  console.log(`API escuchando en http://localhost:${port}`);
-  console.log(`Swagger UI disponible en http://localhost:${port}/api-docs`);
-});
+bootstrap();
 
 
 
-
+// // ---------- beta 1 .1------------------------
 // const express = require('express');
 // const { Pool } = require('pg');
 // const swaggerJsdoc = require('swagger-jsdoc');
@@ -146,5 +114,42 @@ app.listen(port, () => {
 // });
 
 
+
+
+
+
+//-----------------------------B1--------------
+// ---NOTA EL PUERTO DE LOS ENDPOINTS DEBE SER EL MISMO AL DEL MAIN 
+// const express = require('express');
+// const { Pool } = require('pg');
+
+// const app = express();
+// const port = 3500;
+
+// const pool = new Pool({
+//   user: 'root',
+//   host: '35.227.164.209',
+//   database: 'proyecto_5qko',
+//   password: 'GzInv8S6vPS4VhSAwBIyBmzstt72oVWV',
+//   port: 5432,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
+
+// app.get('/data', async (req, res) => {
+//   try {
+//     const result = await pool.query('SELECT * FROM tu_tabla'); // Reemplaza 'tu_tabla' con el nombre de tu tabla
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error al obtener datos');
+//   }
+// });
+
+
+// app.listen(port, () => {
+//   console.log(`API escuchando en http://localhost:${port}`);
+// });
 
 
