@@ -4,9 +4,18 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'API de Proyecto',
+      title: 'E-Commerce',
       version: '1.0.0',
-      description: 'Documentación de la API del Proyecto',
+      description: 'E-commerce´s API Documentation',
+      contact: {
+        name: 'Rubén D.Guerrero N',
+        email: 'rudargeneira@gmail.com',
+        url: 'http://www.ruben-guerrero.com',
+      },
+      license: {
+        name: 'Licencia Apache 2.0',
+        url: 'https://www.apache.org/licenses/LICENSE-2.0.html',
+      },
     },
     servers: [
       {
