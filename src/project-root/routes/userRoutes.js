@@ -21,6 +21,47 @@ const userController = require('../controllers/userController');
  */
 router.get('/users', userController.getUsers);
 
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Iniciar sesión y obtener un token JWT
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Token JWT generado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6InBhc3N3b3JkMTIzIiwiaWF0IjoxNjIzNjQ0NzEwLCJleHAiOjE2MjM2NDg1MTB9.4j9wZLkizPhzA3iPOxGK5kW5POFAdmSTNgLZ43I1zQA
+ *       401:
+ *         description: Credenciales incorrectas
+ *       500:
+ *         description: Error en el servidor
+ */
+router.post('/login', userController.loginUser);
+
 /**
  * @swagger
  * /users/{id}:
