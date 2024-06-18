@@ -248,6 +248,33 @@ app.delete('/users/:id', async (req, res, next) => {
  *       '500':
  *         description: Error en el servidor
  */
+
+// app.post('/login', async (req, res, next) => {
+//   const { email, password } = req.body;
+
+//   try {
+//     const client = await pool.connect();
+//     const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+//     client.release();
+
+//     if (result.rows.length > 0) {
+//       const user = result.rows[0];
+//       const match = await bcrypt.compare(password, user.password);
+
+//       if (match) {
+//         const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
+//         res.json({ token });
+//       } else {
+//         res.status(400).send('Credenciales inválidas');
+//       }
+//     } else {
+//       res.status(400).send('Credenciales inválidas');
+//     }
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
 app.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -258,9 +285,9 @@ app.post('/login', async (req, res, next) => {
 
     if (result.rows.length > 0) {
       const user = result.rows[0];
-      const match = await bcrypt.compare(password, user.password);
 
-      if (match) {
+      // Comparar contraseñas directamente (No recomendado para producción)
+      if (password === user.password) {
         const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
         res.json({ token });
       } else {
@@ -274,12 +301,14 @@ app.post('/login', async (req, res, next) => {
   }
 });
 
+
 app.listen(port, () => {
   console.log(`API escuchando en http://localhost:${port}`);
   console.log(`Swagger UI disponible en http://localhost:${port}/api-docs`);
 });
 
 
+// ------------------login con bycrpt-------------------------------
 // const express = require('express');
 // const { Pool } = require('pg');
 // const swaggerJsdoc = require('swagger-jsdoc');
