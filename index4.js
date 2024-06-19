@@ -358,7 +358,7 @@ app.delete('/users/:userId', async (req, res, next) => {
       return res.status(404).send('Usuario no encontrado');
     }
 
-    if (!user.isAdmin) {
+    if (user.isAdmin) {
       client.release();
       return res.status(403).send('No tiene permisos para eliminar usuarios');
     }
