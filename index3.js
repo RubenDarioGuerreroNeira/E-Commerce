@@ -3,12 +3,13 @@ const { Pool } = require('pg');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const bcrypt = require('bcrypt'); // For secure password hashing
+require('dotenv').config(); // Carga las variables de entorno
 const jwt = require('jsonwebtoken');
 
 const cors = require('cors');
 
 const app = express();
-const port = 11900;
+const port = 14800;
 app.use(express.json());
 
 app.use(cors({
@@ -43,7 +44,15 @@ const swaggerOptions = {
       },
     ],
     components: {
-      schemas: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+      
+        schemas: {
         User: {
           type: 'object',
           properties: {
@@ -64,8 +73,15 @@ const swaggerOptions = {
   apis: ['index3.js'],  // Aquí puedes cambiarlo a donde tengas los comentarios JSDoc
 };
 
+
+
+// Función middleware para verificar si el usuario es administrador
+
+
+
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
 /**
  * @swagger
@@ -139,6 +155,102 @@ app.get('/users/:id', async (req, res, next) => {
 
 /**
  * @swagger
+ * /Token:
+ *   post:
+ *     summary: Inicia sesión de usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: 'demo14@hotmail.com'
+ *               password:
+ *                 type: string
+ *                 example: '*aMisterMag*033'
+ *     responses:
+ *       '200':
+ *         description: Inicio de sesión exitoso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       '400':
+ *         description: Credenciales inválidas
+ *       '500':
+ *         description: Error en el servidor
+ */
+
+app.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    client.release();
+
+    if (result.rows.length > 0) {
+      const user = result.rows[0];
+
+      // Comparar contraseñas directamente (No recomendado para producción)
+      if (password === user.password) {
+        const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
+        res.json({ token });
+      } else {
+        res.status(400).send('Credenciales inválidas');
+      }
+    } else {
+      res.status(400).send('Credenciales inválidas');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+const isAdmin = async (req, res, next) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT isAdmin FROM users WHERE id = $1', [req.user.id]);
+    client.release();
+
+    if (result.rows.length > 0 && result.rows[0].isAdmin) {
+      next();
+    } else {
+      res.status(403).send('No tienes permisos de administrador');
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+// Función middleware para verificar el token
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).send('No se proporcionó el token de autenticación');
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your_jwt_secret_key');
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(403).send('Token inválido');
+  }
+};
+
+
+
+
+/**
+ * @swagger
  * /users:
  *   post:
  *     summary: Agrega un nuevo usuario
@@ -176,11 +288,18 @@ app.post('/users', async (req, res, next) => {
   }
 });
 
+//----------------------------------------------------------------------
+
+//-----------funcion is admin
+
+
 /**
  * @swagger
  * /users/{id}:
  *   delete:
  *     summary: Elimina un usuario por su ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -191,12 +310,14 @@ app.post('/users', async (req, res, next) => {
  *     responses:
  *       '204':
  *         description: Usuario eliminado exitosamente
+ *       '403':
+ *         description: No tienes permisos de administrador
  *       '404':
  *         description: Usuario no encontrado
  *       '500':
  *         description: Error al eliminar el usuario
  */
-app.delete('/users/:id', async (req, res, next) => {
+app.delete('/users/:id', verifyToken, isAdmin, async (req, res, next) => {
   const userId = req.params.id;
 
   try {
@@ -215,91 +336,10 @@ app.delete('/users/:id', async (req, res, next) => {
   }
 });
 
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: Inicia sesión de usuario
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 example: 'example@example.com'
- *               password:
- *                 type: string
- *                 example: 'password123'
- *     responses:
- *       '200':
- *         description: Inicio de sesión exitoso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *       '400':
- *         description: Credenciales inválidas
- *       '500':
- *         description: Error en el servidor
- */
 
-// app.post('/login', async (req, res, next) => {
-//   const { email, password } = req.body;
 
-//   try {
-//     const client = await pool.connect();
-//     const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
-//     client.release();
 
-//     if (result.rows.length > 0) {
-//       const user = result.rows[0];
-//       const match = await bcrypt.compare(password, user.password);
 
-//       if (match) {
-//         const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
-//         res.json({ token });
-//       } else {
-//         res.status(400).send('Credenciales inválidas');
-//       }
-//     } else {
-//       res.status(400).send('Credenciales inválidas');
-//     }
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-app.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
-    client.release();
-
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-
-      // Comparar contraseñas directamente (No recomendado para producción)
-      if (password === user.password) {
-        const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
-        res.json({ token });
-      } else {
-        res.status(400).send('Credenciales inválidas');
-      }
-    } else {
-      res.status(400).send('Credenciales inválidas');
-    }
-  } catch (err) {
-    next(err);
-  }
-});
 
 
 app.listen(port, () => {
