@@ -20,8 +20,11 @@ async function bootstrap() {
 
   app.use(LoggerMiddleware)
   app.useGlobalPipes(new ValidationPipe())
-  await app.listen(8800);
-
+  
+  // await app.listen(8800);ORIGINAL FUNCIONANDO 
+  const port = process.env.PORT || 3000;
+  await app.listen(port)
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
 bootstrap();
