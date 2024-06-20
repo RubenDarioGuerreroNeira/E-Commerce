@@ -30,9 +30,12 @@ export class OrdersController {
 
     
     @Post()
-    addOrders(@Body() order: any) {
-        const { user_id, products } = order
-        return this.OrderService.addOrders(user_id, products);
+    // addOrders(@Body() order: any) {
+    addOrders(@Body() order: OrdersDto) {
+        // const { user_id, products } = order cambie 2 lineas 
+         const { userId, products } = order
+        // return this.OrderService.addOrders(user_id, products);
+        return this.OrderService.addOrders(userId, products);
     }
     
     // @ApiBearerAuth()
