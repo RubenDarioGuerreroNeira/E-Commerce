@@ -17,9 +17,10 @@ export class OrdersController {
 
     // Total de Ordenes 
     @Get('total')
-    @ApiBearerAuth()
-    @Roles(Role.Admin) // Admin
-    @UseGuards(AuthGuard, RolesGuard)
+    // @ApiBearerAuth()
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles(Role.Admin) // Admin
+    
     async getTotalOrders(): Promise<{ totalOrders: number, totalAmount: number }/*{ totalOrders: number }*/> {
         // const totalOrders = await this.OrderService.getTotalOrders();
         // return { totalOrders };
@@ -27,17 +28,17 @@ export class OrdersController {
         return { totalOrders, totalAmount };
     }
 
+    
     @Post()
-    // @UseGuards(AuthGuard)
     addOrders(@Body() order: any) {
         const { user_id, products } = order
         return this.OrderService.addOrders(user_id, products);
     }
-
+    
+    // @ApiBearerAuth()
+    // @Roles(Role.Admin) //  Admin
+    // @UseGuards(AuthGuard, RolesGuard)
     @Get(':id')
-    @ApiBearerAuth()
-    @Roles(Role.Admin) //  Admin
-    @UseGuards(AuthGuard, RolesGuard)
     getOderById(@Query('id', ParseUUIDPipe) id: string) {
         // return this.OrderService.getOrder(id)
 
@@ -53,19 +54,19 @@ export class OrdersController {
     }
 
 
-    @ApiBearerAuth()
-    @Delete(':id')
     @Roles(Role.SAdmin) // Super Admin
     @UseGuards(AuthGuard, RolesGuard)
-    DeleteOrder(@Param("id") id: string) {
+    @ApiBearerAuth()
+    @Delete(':id')
+     DeleteOrder(@Param("id") id: string) {
         return this.OrderService.deleteOrder(id);
 
     }
 
     @Get('user/:id')
-    @ApiBearerAuth()
-    @Roles(Role.User, Role.Admin) // User
-    @UseGuards(AuthGuard, RolesGuard)
+    // @ApiBearerAuth()
+    // @Roles(Role.User, Role.Admin) // User
+    // @UseGuards(AuthGuard, RolesGuard)
     async getOrdersByUser(@Param('id') id: string) {
         return this.OrderService.getTotalOrderById(id);
 
