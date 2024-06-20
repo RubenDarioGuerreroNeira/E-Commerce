@@ -11,11 +11,11 @@ import { OrdersDto } from './orders.Dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 
 @ApiTags('Orders')
-@ApiTags('Get Total Orders')
 @Controller('orders')
 export class OrdersController {
     constructor(private OrderService: OrderService,) { }
-
+    
+    @ApiTags('Orders')
     // Total de Ordenes 
     @Get('total')
     // @ApiBearerAuth()
