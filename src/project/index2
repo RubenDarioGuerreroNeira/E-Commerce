@@ -1,0 +1,39 @@
+
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const swaggerDocs = require('./swagger');
+const swaggerConfig = require('./swagger');
+const swaggerUi = require('./swagger')
+const userRoutes = require('./routes/users');
+
+const app = express();
+const port = process.env.PORT || 15800;
+
+console.log(`CORS_ORIGIN: ${process.env.CORS_ORIGIN}`);
+
+app.use(express.json());
+
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+  
+  methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
+  credentials: true,
+  onError: (err, req, res, next) => {
+    console.error('CORS error:', err);
+    next(err);
+  },
+}));
+
+app.use(express.json());
+app.use('/api-docs', swaggerConfig.swaggerUi.serve, swaggerConfig.swaggerUi.setup(swaggerConfig.swaggerDocs));
+
+
+
+app.use('/users',userRoutes);
+
+app.listen(port, () => {
+  console.log(`API escuchando en http://localhost:${port}`);
+  console.log(`Swagger UI disponible en http://localhost:${port}/api-docs`);
+});
