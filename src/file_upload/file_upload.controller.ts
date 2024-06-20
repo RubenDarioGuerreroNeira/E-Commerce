@@ -9,6 +9,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 // nuevo
 import { Multer } from 'multer';
+import { Express } from 'express';
 
 
 
@@ -26,7 +27,7 @@ export class FileUploadController {
             validators: [new MaxFileSizeValidator({ maxSize: 2000000, message: 'File is to Large' }),
             new FileTypeValidator({ fileType: /(jpg|png|jpeg|webp)$/, })
             ]
-        })) file: /*Express.Multer.File, ORIGINAL */ Multer.File,
+        })) file: Express.Multer.File, 
     ) {
         return this.fileuploadservice.uploadimage(file, productId)
 
