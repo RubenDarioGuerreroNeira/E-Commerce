@@ -17,7 +17,7 @@ export class UserDto {
    @IsEmail()
    @ApiProperty({
       description: "Type here email by user",
-      example: "ufdfgfdu@email.com"
+      example: "demo14@hotmail.com"
    })
 
    email: string;

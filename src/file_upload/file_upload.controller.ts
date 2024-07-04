@@ -5,6 +5,8 @@ import { FileUploadService } from './file_upload.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { Express } from 'express';
+import { UploadFileDto } from './upload-file.dto';  // Importa el DTO
+
 
 @ApiTags('File Upload')
 @Controller('files')
@@ -18,8 +20,9 @@ export class FileUploadController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Archivo de imagen',
-    type: 'multipart/form-data',
+    // type: 'multipart/form-data',
     required: true,
+    type: UploadFileDto,
     schema: {
       type: 'object',
       properties: {
