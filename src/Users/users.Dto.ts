@@ -40,7 +40,7 @@ export class UserDto {
 
    @IsNotEmpty()
    @Validate(MatchPasword, ['password'])
-   confirmPassword: string;
+   confirmPassword?: string;
 
    @IsNotEmpty()
    @IsString()

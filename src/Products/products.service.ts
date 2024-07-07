@@ -31,6 +31,7 @@ export class ProdutsService {
     async getStock() {
         return this.productsService.getStock()
     }
+    
 
 }
 

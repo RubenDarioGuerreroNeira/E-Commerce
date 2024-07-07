@@ -30,7 +30,8 @@ import jwt from './jwt';
     CategoriesModule, AuthModule, ProductsModule, UsersModule, OrdersModule, FileUploadModule,
     JwtModule.register({
       global: true,
-      secret: jwt.secret,
+      // secret: jwt.secret,
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: jwt.expiresIn }
     })
   ],

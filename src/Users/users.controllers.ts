@@ -32,11 +32,12 @@ export class UsersController {
         return this.usersService.getUsers(1, 5)
 
     }
-
+  // funciona con el token
     @Get(':id')
     @ApiBearerAuth()
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)
+    
     getUserById(@Param("id", ParseUUIDPipe) id: string) {
         return this.usersService.getByID(id);
 
@@ -50,7 +51,7 @@ export class UsersController {
 
     }
 
-    @ApiBearerAuth()
+    // @ApiBearerAuth()
     @Put(':id')
     // @UseGuards(AuthGuard)
     // @Roles(Role.SAdmin) // super Admin

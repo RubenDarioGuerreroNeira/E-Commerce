@@ -98,13 +98,13 @@ export class ProductsRepository {
         return updateProduct
     }
 
-    async getStock(): Promise<{ maxStockProduct: products, minStockProduct: products }> {
+    async getStock(): Promise<{ maxStockProduct: products, minStockProduct: products,total: number }> {
         const products = await this.productsRepository.find();
 
         const maxStockProduct = products.reduce((prev, current) => (prev.stock > current.stock) ? prev : current);
         const minStockProduct = products.reduce((prev, current) => (prev.stock < current.stock) ? prev : current);
-
-        return { maxStockProduct, minStockProduct };
+        const total = products.length;
+        return { maxStockProduct, minStockProduct,total };
     }
 
 
