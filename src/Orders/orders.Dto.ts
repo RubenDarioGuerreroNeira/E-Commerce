@@ -8,7 +8,7 @@ export class OrdersDto {
     @IsNotEmpty()
     @ApiProperty({
         description: "Write Id by User",
-        example: "123e4567-e89b-12d3-a456-426614174000"
+        example: "206644f0-4e8a-4cd5-9464-ed9b57e5adbb"
     })
     userId: string;
 

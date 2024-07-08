@@ -34,18 +34,19 @@ export class UsersController {
     }
   // funciona con el token
     @Get(':id')
-    @ApiBearerAuth()
-    @Roles(Role.Admin)
-    @UseGuards(AuthGuard, RolesGuard)
+    // @ApiBearerAuth()
+    // @Roles(Role.Admin)
+    // @UseGuards(AuthGuard, RolesGuard)
     
     getUserById(@Param("id", ParseUUIDPipe) id: string) {
         return this.usersService.getByID(id);
 
     }
-    @ApiBearerAuth()
+    
     @Delete(':id')
-    // @Roles(Role.SAdmin) // super Admin
-    // @UseGuards(AuthGuard, RolesGuard)
+    @ApiBearerAuth()
+    @Roles(Role.Admin) // super Admin
+    @UseGuards(AuthGuard, RolesGuard)
     DeleteId(@Param("id") id: string) {
         return this.usersService.deleteUser(id);
 
