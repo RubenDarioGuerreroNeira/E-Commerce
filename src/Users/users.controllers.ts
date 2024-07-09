@@ -7,7 +7,7 @@ import { UserDto } from './users.Dto';
 import { Role } from 'src/roles.enum';
 import { Roles } from 'src/Decorators/roles.decorators';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags,ApiOperation } from '@nestjs/swagger';
 import { Users } from 'src/Entities/Users.entity';
 
 
@@ -17,12 +17,14 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
     @Post()
+    @ApiOperation({ summary: ' Create User' })
     create(@Body() user: UserDto) {
         return this.usersService.addUser(user)
     }
 
     @Get()
     @ApiBearerAuth()
+    @ApiOperation({ summary: ' Get User/Provide Page Init and Limit' })
     // @Roles(Role.Admin)
     // @UseGuards(AuthGuard, RolesGuard)
     getUsers(@Query('page') page: number, @Query('limit') limit: number) {
@@ -34,6 +36,7 @@ export class UsersController {
     }
   // funciona con el token
     @Get(':id')
+    @ApiOperation({ summary: ' Get User By Id' })
     // @ApiBearerAuth()
     // @Roles(Role.Admin)
     // @UseGuards(AuthGuard, RolesGuard)
@@ -44,6 +47,7 @@ export class UsersController {
     }
     
     @Delete(':id')
+    @ApiOperation({ summary: ' Delete User By Id' })
     @ApiBearerAuth()
     @Roles(Role.Admin) // super Admin
     @UseGuards(AuthGuard, RolesGuard)
@@ -54,6 +58,7 @@ export class UsersController {
 
     // @ApiBearerAuth()
     @Put(':id')
+    @ApiOperation({ summary: ' Update User By Id' })
     // @UseGuards(AuthGuard)
     // @Roles(Role.SAdmin) // super Admin
     async updateUser(@Param('id') id: string, @Body() user: Users): Promise<Partial<Users>> {
@@ -63,6 +68,7 @@ export class UsersController {
 
 
     @Get(':email')
+    @ApiOperation({ summary: ' Get User By Email' })
     async getUserByEmail(@Param('email') email: string): Promise<Partial<Users>> {
         const user = await this.usersService.getByemail(email);
         if (!user) {

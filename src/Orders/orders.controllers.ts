@@ -4,7 +4,7 @@ import { OrderService } from './orders.service';
 import { Role } from 'src/roles.enum';
 import { Roles } from 'src/Decorators/roles.decorators';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags,ApiOperation } from '@nestjs/swagger';
 import { OrdersDto } from './orders.Dto';
 
 
@@ -18,6 +18,7 @@ export class OrdersController {
     @ApiTags('Orders')
     // Total de Ordenes 
     @Get('total')
+    @ApiOperation({ summary: ' Get Total Orders' })
     // @ApiBearerAuth()
     // @UseGuards(AuthGuard, RolesGuard)
     // @Roles(Role.Admin) // Admin
@@ -31,6 +32,7 @@ export class OrdersController {
 
     
     @Post()
+    @ApiOperation({ summary: ' Create Order' })
     // addOrders(@Body() order: any) {
     addOrders(@Body() order: OrdersDto) {
         // const { user_id, products } = order cambie 2 lineas 
@@ -43,6 +45,7 @@ export class OrdersController {
     // @Roles(Role.Admin) //  Admin
     // @UseGuards(AuthGuard, RolesGuard)
     @Get(':id')
+    @ApiOperation({ summary: ' Get Order By Id' })
     getOderById(@Query('id', ParseUUIDPipe) id: string) {
         // return this.OrderService.getOrder(id)
 
@@ -60,6 +63,7 @@ export class OrdersController {
 
 
     @Get('user/:id')
+    @ApiOperation({ summary: ' Get Order By Id User' })
     // @ApiBearerAuth()
     // @Roles(Role.User, Role.Admin) // User
     // @UseGuards(AuthGuard, RolesGuard)
@@ -67,8 +71,6 @@ export class OrdersController {
         return this.OrderService.getTotalOrderById(id);
 
     }
-
-
 
 
 }

@@ -35,33 +35,7 @@ export class ProductsRepository {
         return this.productsRepository.findOneBy({ id: id });
     }
 
-    // async addProduct() {
-    //     const Categories = await this.categoriesRepository.find();
-
-    //     data?.map(async (element) => {
-    //         const category = Categories.find((category) => category.name === element.category)
-    //         const product = new products();
-    //         product.name = element.name;
-    //         product.description = element.description;
-    //         product.price = element.price;
-    //         product.imgUrl = element.imgUrl;
-    //         product.stock = element.stock;
-    //         product.category_id = category;
-
-    //         await this.productsRepository
-    //             .createQueryBuilder()
-    //             .insert()
-    //             .into(products)
-    //             .values(product)
-    //             .orUpdate(["description", "price", "imgUrl", "stock",], ["name"])
-    //             .execute()
-
-    //     })
-    //     return 'Products Added';
-
-
-    // }
-
+   
     async addProduct() {
         const categories = await this.categoriesRepository.find();
 
@@ -97,17 +71,6 @@ export class ProductsRepository {
 
         return updateProduct
     }
-
-    async getStock(): Promise<{ maxStockProduct: products, minStockProduct: products,total: number }> {
-        const products = await this.productsRepository.find();
-
-        const maxStockProduct = products.reduce((prev, current) => (prev.stock > current.stock) ? prev : current);
-        const minStockProduct = products.reduce((prev, current) => (prev.stock < current.stock) ? prev : current);
-        const total = products.length;
-        return { maxStockProduct, minStockProduct,total };
-    }
-
-
 
 
 }

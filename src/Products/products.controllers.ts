@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Param, Controller, Get, Query } from '@nestjs/common';
 import { ProdutsService } from './products.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags,ApiOperation,ApiResponse } from '@nestjs/swagger';
 import { products } from 'src/Entities/Products.entity';
 import { Role } from 'src/roles.enum';
 import { Roles } from 'src/Decorators/roles.decorators';
@@ -18,15 +18,14 @@ export class ProductsController implements OnApplicationBootstrap {
     }
 
     @Get('seeder')
+    @ApiOperation({ summary: ' Charge Products Manually' })
     addProducts() {
         return this.productsService.addProducts()
     }
 
-
-
     @Get()
-    // @ApiBearerAuth()
-    // @Roles(Role.Admin)
+    @ApiOperation({ summary: 'Get All Products' })
+    
     getProducts(@Query('page') page: number, @Query('limit') limit: number) {
         if (page && limit) {
             return this.productsService.getProducts(page, limit)
@@ -36,6 +35,7 @@ export class ProductsController implements OnApplicationBootstrap {
 
 
     @ApiBearerAuth()
+    @ApiOperation({ summary: 'Get Product by Id' })
     @Roles(Role.Admin)
     @Get('/:id')
     async getProductById(@Param('id') id: string): Promise<products | null> {
@@ -49,12 +49,6 @@ export class ProductsController implements OnApplicationBootstrap {
         }
     }
 
-    // muestra el producto con mayor stock y el menor stock
-    @Get('stock')
-    async getStock() {
-        return this.productsService.getStock()
-
-    }
 
 }
 

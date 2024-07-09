@@ -11,7 +11,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('E-Commerce M04 HENRY')
     .setDescription('RUBEN DARIO GUERRERO NEIRA')
-    .setVersion('1.0')
+    .setVersion('1.1.0')
     .addBearerAuth()
     .build();
 
