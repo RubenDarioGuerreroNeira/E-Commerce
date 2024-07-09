@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Injectable } from "@nestjs/common"
+import { Injectable , NotFoundException} from "@nestjs/common"
 // import { UserEntity } from "./user.Entity"
 import { Users } from "src/Entities/Users.entity"
 import { /*LimitOnUpdateNotSupportedError*/ Repository } from "typeorm"
@@ -10,7 +10,6 @@ import { InjectRepository } from "@nestjs/typeorm"
 @Injectable()
 
 export class UsersRepository {
-
     constructor(@InjectRepository(Users) private userRepository: Repository<Users>,) {
     }
 
@@ -42,13 +41,13 @@ export class UsersRepository {
 
 
 
-    async updatetUsers(id: string, user: Users): Promise<Partial<Users>> {
-        await this.userRepository.update(id, user)
+    // async updatetUsers(id: string, user: Users): Promise<Partial<Users>> {
+    //     await this.userRepository.update(id, user)
 
-        const UpdateUser = await this.userRepository.findOneBy({ id })
-        const { password, ...userWithoutPassword } = UpdateUser
-        return userWithoutPassword
-    }
+    //     const UpdateUser = await this.userRepository.findOneBy({ id })
+    //     const { password, ...userWithoutPassword } = UpdateUser
+    //     return userWithoutPassword
+    // }
 
     async deleteUser(id: string): Promise<Partial<Users>> {
         const user = await this.userRepository.findOneBy({ id })
@@ -56,6 +55,26 @@ export class UsersRepository {
         const { password, ...userWithoutPassword } = user
         return userWithoutPassword
     }
+
+    async updatetUsers(id: string, user: Users): Promise<Partial<Users>> {
+
+        try {
+            const existingUser = await this.userRepository.findOneBy({ id });
+      
+            if (!existingUser) {
+              throw new NotFoundException('User not found');
+            }
+      
+            await this.userRepository.update(id, user);
+      
+            const updatedUser = await this.userRepository.findOneBy({ id });
+            const { password, ...userWithoutPassword } = updatedUser;
+            return userWithoutPassword;
+          } catch (error) {
+            console.error('Error updating user:', error);
+            throw error;
+          }
+        }
 
     async GetByEmail(email: string): Promise<Partial<Users>> {
         try {
