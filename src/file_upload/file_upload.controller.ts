@@ -22,7 +22,7 @@ export class FileUploadController {
   @Post('uploadImage/:id')
 //   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Subir una imagen' })
+  @ApiOperation({ summary: 'Upload Image' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Archivo de imagen',
