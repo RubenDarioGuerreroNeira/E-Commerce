@@ -3,13 +3,19 @@ import { Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Pos
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file_upload.service';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody,ApiBearerAuth } from '@nestjs/swagger';
 import { Express } from 'express';
 import { UploadFileDto } from './upload-file.dto';  // Importa el DTO
+import { Role } from 'src/roles.enum';
+import { Roles } from 'src/Decorators/roles.decorators';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 
 @ApiTags('File Upload')
 @Controller('files')
+@ApiBearerAuth()
+@Roles(Role.Admin)
+@UseGuards(AuthGuard, RolesGuard)
 export class FileUploadController {
   constructor(private readonly fileuploadservice: FileUploadService) {}
 

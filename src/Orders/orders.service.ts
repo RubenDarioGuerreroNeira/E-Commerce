@@ -16,9 +16,9 @@ export class OrderService {
         return this.orderservice.getOrder(id)
     }
 
-    deleteOrder(id: string) {
-        return this.orderservice.deleteOrder(id)
-    }
+    // deleteOrder(id: string) {
+    //     return this.orderservice.deleteOrder(id)
+    // }
 
     async getTotalOrders(): Promise</*number*/{ totalOrders: number, totalAmount: number }> {
         return this.orderservice.totalOrder();
@@ -28,5 +28,6 @@ export class OrderService {
     async getTotalOrderById(id: string): Promise<{ totalOrders: number, totalAmount: number }> {
         return this.orderservice.totalOrdersById(id);
     }
+
 
 }

@@ -6,6 +6,8 @@ import { Repository } from "typeorm";
 import { products } from "src/Entities/Products.entity"; // Cambiado de 'products' a 'Products'
 import { Users } from "src/Entities/Users.entity";
 import { Orders } from "src/Entities/Orders.entity";
+//
+
 
 @Injectable()
 export class OrdersRepository {
@@ -21,6 +23,8 @@ export class OrdersRepository {
 
         @InjectRepository(Users)
         private usersRepository: Repository<Users>
+        
+
     ) { }
 
     async addOrders(user_id: string, products: any[]) {
@@ -75,23 +79,7 @@ export class OrdersRepository {
         return order;
     }
 
-    // Elimina order
-    async deleteOrder(id: string): Promise<void> {
-        const order = await this.orderRepository.findOne({
-            where: { id },
-            relations: ['orderDetails']
-        });
 
-        if (!order) {
-            throw new NotFoundException(`Order with ID ${id} not found`);
-        }
-
-        // Eliminar los detalles de la orden
-        await this.ordersDetailsRepository.delete({ order: { id: order.id } });
-
-        // Eliminar la orden
-        await this.orderRepository.delete({ id: order.id });
-    }
 
     async totalOrder(): Promise<{ totalOrders: number, totalAmount: number }> {
 
@@ -127,4 +115,10 @@ export class OrdersRepository {
         }
     }
 
+
+
+
+
 }
+
+

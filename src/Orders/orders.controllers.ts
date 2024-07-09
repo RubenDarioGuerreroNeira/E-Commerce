@@ -58,14 +58,6 @@ export class OrdersController {
     }
 
 
-    @Roles(Role.SAdmin) // Super Admin
-    @UseGuards(AuthGuard, RolesGuard)
-    @ApiBearerAuth()
-    @Delete(':id')
-     DeleteOrder(@Param("id") id: string) {
-        return this.OrderService.deleteOrder(id);
-
-    }
 
     @Get('user/:id')
     // @ApiBearerAuth()
