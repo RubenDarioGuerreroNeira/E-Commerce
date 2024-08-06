@@ -58,12 +58,15 @@ export class UsersController {
 
     @ApiBearerAuth()
     @Put(':id')
+    
     @ApiOperation({ summary: ' Update User By Id' })
     @UseGuards(AuthGuard)
-    @Roles(Role.SAdmin) // super Admin
+    @Roles(Role.Admin) // super Admin
     async updateUser(@Param('id') id: string, @Body() user: Users): Promise<Partial<Users>> {
+    
 
         return this.usersService.updateUser(id, user)
+        
     }
 
 

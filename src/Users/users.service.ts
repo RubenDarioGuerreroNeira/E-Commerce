@@ -29,8 +29,11 @@ export class UsersService {
     }
 
 
-    updateUser(id: string, user: any) {
+
+    updateUser(id: string, user: Users):Promise<Partial<Users>> {
+    
         return this.userRepository.updatetUsers(id, user)
+    
     }
 
 

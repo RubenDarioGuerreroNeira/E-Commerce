@@ -76,6 +76,10 @@ export class UsersRepository {
           }
         }
 
+
+    
+
+
     async GetByEmail(email: string): Promise<Partial<Users>> {
         try {
             const user = await this.userRepository.findOneBy({ email });
